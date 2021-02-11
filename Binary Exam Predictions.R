@@ -25,17 +25,34 @@ View(test)
 train$Result <- paste((train$math.score+train$reading.score+train$writing.score)/3)
 validation$Result <- paste((validation$math.score+validation$reading.score+validation$writing.score)/3)
 head(validation)
-##removing reading, writing, and math scores train$math.score <- NULL train$reading.score <- NULL train$writing.score <- NULL validation$math.score <- NULL validation$reading.score <- NULL validation$writing.score <- NULL ##condense results to pass/fail train <- mutate(train, TestResults = ifelse(train$Result > 70,print("Pass"),print("Fail"))) validation <- mutate(validation, TestResults = ifelse(validation$Result > 70,print("Pass"),print("Fail")))
+##removing reading, writing, and math scores 
+train$math.score <- NULL 
+train$reading.score <- NULL 
+train$writing.score <- NULL 
+validation$math.score <- NULL 
+validation$reading.score <- NULL 
+validation$writing.score <- NULL 
+
+##condense results to pass/fail 
+train <- mutate(train, TestResults = ifelse(train$Result > 70,print("Pass"),print("Fail"))) 
+validation <- mutate(validation, TestResults = ifelse(validation$Result > 70,print("Pass"),print("Fail")))
+
 head(train)
 head(validation)
 head(test)
 
-##changing testresults to factor and results to int train$TestResults <- as.factor(train$TestResults) train$Result <- as.numeric(train$Result) validation$TestResults <- as.factor(validation$TestResults) validation$Result <- as.numeric(validation$Result)
+##changing test results to factor and results to int 
+train$TestResults <- as.factor(train$TestResults) 
+train$Result <- as.numeric(train$Result) 
+validation$TestResults <- as.factor(validation$TestResults) 
+validation$Result <- as.numeric(validation$Result)
 
 #variable selection
 ##random forest
 library(randomForest)
-###without the numeric grades as a variable the best predictors are lunch, test prep and gender rf.train <- randomForest(TestResults ~ gender+race.ethnicity+parental.level.of.education+lunch+test.preparation.course, train, importance = TRUE)
+
+###without the numeric grades as a variable the best predictors are lunch, test prep and gender 
+rf.train <- randomForest(TestResults ~ gender+race.ethnicity+parental.level.of.education+lunch+test.preparation.course, train, importance = TRUE)
 importance(rf.train)
 varImpPlot(rf.train)
 
